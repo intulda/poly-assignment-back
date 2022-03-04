@@ -40,6 +40,6 @@ public class Account {
     public Account(AccountDTO accountDTO) {
         this.account = accountDTO.getAccount();
         this.password = accountDTO.getAccountPassword();
-        this.name = "kimbogeun";
+        this.name = accountDTO.getAccountName();
     }
 }

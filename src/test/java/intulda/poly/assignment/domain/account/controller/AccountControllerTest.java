@@ -1,5 +1,6 @@
 package intulda.poly.assignment.domain.account.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import intulda.poly.assignment.domain.account.model.Account;
 import intulda.poly.assignment.domain.account.model.AccountDTO;
@@ -8,6 +9,8 @@ import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +26,8 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -63,12 +68,40 @@ class AccountControllerTest {
                 .build();
 
         accountRepository.save(account);
+    }
 
+    @DisplayName(value = "회원가입")
+    @Test
+    void registerTest() throws Exception {
+        for (int i = 0; i < 10; i++) {
+            AccountDTO accountDTO = AccountDTO.builder()
+                    .account(i + "a")
+                    .accountPassword((i + (i * i)) + "")
+                    .accountName("a" + i)
+                    .build();
+            Account account = Account.builder()
+                    .accountDTO(accountDTO)
+                    .build();
+
+            RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v1/account")
+                    .content(objectMapper.writeValueAsString(account))
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .accept(MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN)
+                    .characterEncoding(StandardCharsets.UTF_8.displayName());
+
+            MockHttpServletResponse response = mockMvc.perform(requestBuilder)
+                    .andExpect(MockMvcResultMatchers.status().isOk())
+                    .andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+                    .andReturn()
+                    .getResponse();
+
+            logger.info(objectMapper.writeValueAsString(account));
+        }
     }
 
     @DisplayName(value = "로그인 성공 후 토큰 반환")
     @Test
-    void login() throws Exception {
+    void loginTest() throws Exception {
         JwtRequest jwtRequest = JwtRequest.builder()
                 .username("intulda")
                 .password("flqj0610")
@@ -87,8 +120,5 @@ class AccountControllerTest {
                 .getResponse();
 
         logger.info(response.getContentAsString());
-
-
-
     }
 }
