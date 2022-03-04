@@ -64,6 +64,17 @@ class AccountControllerTest {
         accountRepository.save(account);
     }
 
+    @DisplayName(value = "내 정보 찾기")
+    @Test
+    void findMeTest() throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v1/account");
+        MockHttpServletResponse response = mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse();
+        logger.info(response.getContentAsString());
+    }
+
     @DisplayName(value = "회원가입")
     @Test
     void registerTest() throws Exception {
