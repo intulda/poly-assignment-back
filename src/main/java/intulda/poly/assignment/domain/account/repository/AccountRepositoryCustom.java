@@ -8,5 +8,6 @@ import java.util.Optional;
 @Repository
 public interface AccountRepositoryCustom {
 
-    Optional<Account> findUser(Account account);
+    Optional<Account> findUserById(Account account);
+
 }

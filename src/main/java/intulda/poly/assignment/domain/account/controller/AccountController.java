@@ -8,8 +8,10 @@ import intulda.poly.assignment.global.configuration.jwt.model.JwtResponse;
 import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
@@ -28,19 +30,31 @@ public class AccountController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @GetMapping(value = PREFIX_URI)
+    public ResponseEntity findMe(final HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        String getId = null;
+
+        if (token != null) {
+            getId = jwtTokenProvider.getUsernameFromToken(token);
+        }
+
+        Account user = accountService.findUser(Long.parseLong(getId)).orElseThrow(IllegalArgumentException::new);
+
+        return new ResponseEntity(user, HttpStatus.OK);
+    }
+
     @PostMapping(value = PREFIX_URI)
     public ResponseEntity register(@RequestBody @Valid AccountDTO accountDTO) {
-        Optional<Account> account = accountService.saveUser(
-                Account.builder()
-                        .accountDTO(accountDTO)
-                        .build()
-        );
+        Optional<Account> account = accountService.saveUser(accountDTO);
 
         return new ResponseEntity(account, HttpStatus.OK);
     }
 
     @PostMapping(value = PREFIX_URI + "/login")
     public ResponseEntity login(@RequestBody @Valid JwtRequest jwtRequest) {
+
+
         AccountDTO accountDTO = AccountDTO.builder()
                 .account(jwtRequest.getUsername())
                 .accountPassword(jwtRequest.getPassword())
@@ -50,14 +64,11 @@ public class AccountController {
                 .accountDTO(accountDTO)
                 .build();
 
-        Optional<Account> result = accountService.findUser(account);
-        Account user = null;
+        Account result = accountService.findUser(account);
         String token = null;
 
-
         try {
-            user = result.orElseThrow(IllegalArgumentException::new);
-            token = jwtTokenProvider.generateToken(user);
+            token = jwtTokenProvider.generateToken(result);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity("존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND);
         }

@@ -63,9 +63,9 @@ public class JwtTokenProvider implements Serializable {
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
 
-    public Boolean validateToken(String token, Account account) {
+    public Boolean validateToken(String token, Long id) {
         final String userId = getUsernameFromToken(token);
-        return (userId.equals(String.valueOf(account.getId())) && !isTokenExpired(token));
+        return (userId.equals(String.valueOf(id)) && !isTokenExpired(token));
     }
 
 }

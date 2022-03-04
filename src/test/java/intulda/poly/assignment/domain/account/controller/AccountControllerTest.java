@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -113,6 +114,19 @@ class AccountControllerTest {
                 .andReturn()
                 .getResponse();
 
+        logger.info(response.getContentAsString());
+    }
+
+    @DisplayName(value = "내 정보 찾기")
+    @Test
+    void findMeTest(final HttpServletRequest request) throws Exception {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/api/v1/account")
+                .header("Authorization", request.getHeader("Authorization"));
+
+        MockHttpServletResponse response = mockMvc.perform(requestBuilder)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn()
+                .getResponse();
         logger.info(response.getContentAsString());
     }
 }
