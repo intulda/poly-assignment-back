@@ -1,6 +1,5 @@
 package intulda.poly.assignment.domain.account.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import intulda.poly.assignment.domain.account.model.Account;
 import intulda.poly.assignment.domain.account.model.AccountDTO;
@@ -9,8 +8,6 @@ import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +23,6 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
@@ -95,7 +89,7 @@ class AccountControllerTest {
                     .andReturn()
                     .getResponse();
 
-            logger.info(objectMapper.writeValueAsString(account));
+            logger.info(response.getContentAsString());
         }
     }
 
