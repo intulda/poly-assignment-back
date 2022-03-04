@@ -1,9 +1,13 @@
 package intulda.poly.assignment.global.configuration.security.configuration;
 
+import intulda.poly.assignment.domain.account.service.AccountService;
 import intulda.poly.assignment.global.configuration.jwt.filter.JwtAuthenticationEntryPoint;
 import intulda.poly.assignment.global.configuration.jwt.filter.JwtRequestFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -20,9 +24,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtRequestFilter jwtRequestFilter;
 
-    public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtRequestFilter jwtRequestFilter) {
+    private final AccountService accountService;
+
+    public WebSecurityConfig(JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtRequestFilter jwtRequestFilter, AccountService accountService) {
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtRequestFilter = jwtRequestFilter;
+        this.accountService = accountService;
     }
 
     @Override
@@ -40,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/vi/authenticate").permitAll()
+                .antMatchers("/api/v1/account/authenticate").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
