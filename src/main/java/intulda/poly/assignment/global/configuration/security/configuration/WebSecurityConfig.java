@@ -1,6 +1,6 @@
 package intulda.poly.assignment.global.configuration.security.configuration;
 
-import intulda.poly.assignment.domain.account.AccountService;
+import intulda.poly.assignment.domain.account.service.AccountService;
 import intulda.poly.assignment.global.configuration.jwt.filter.JwtAuthenticationEntryPoint;
 import intulda.poly.assignment.global.configuration.jwt.filter.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,18 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.accountService = accountService;
     }
 
-    @Autowired
-    public void globalConfigure(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
-        authenticationManagerBuilder
-                .userDetailsService(accountService).passwordEncoder(bCryptPasswordEncoder());
-    }
-
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
@@ -59,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .disable()
                 .authorizeRequests()
-                .antMatchers("/api/vi/authenticate").permitAll()
+                .antMatchers("/api/v1/account/authenticate").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
