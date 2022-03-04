@@ -23,4 +23,8 @@ public class AccountService {
         return this.accountRepository.findUser(account);
     }
 
+    public Optional<Account> saveUser(Account account) {
+        return Optional.of(this.accountRepository.save(account));
+    }
+
 }

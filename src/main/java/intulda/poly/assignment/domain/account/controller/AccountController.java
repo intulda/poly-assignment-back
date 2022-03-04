@@ -8,16 +8,13 @@ import intulda.poly.assignment.global.configuration.jwt.model.JwtResponse;
 import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvider;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.web.HttpRequestHandler;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/*")
+@RequestMapping("/api/v1/**")
 public class AccountController {
 
     private static final String PREFIX_URI = "account";
@@ -31,7 +28,18 @@ public class AccountController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @PostMapping(value = PREFIX_URI + "/authenticate")
+    @PostMapping(value = PREFIX_URI)
+    public ResponseEntity register(@RequestBody @Valid AccountDTO accountDTO) {
+        Optional<Account> account = accountService.saveUser(
+                Account.builder()
+                        .accountDTO(accountDTO)
+                        .build()
+        );
+
+        return new ResponseEntity(account, HttpStatus.OK);
+    }
+
+    @PostMapping(value = PREFIX_URI + "/login")
     public ResponseEntity login(@RequestBody @Valid JwtRequest jwtRequest) {
         AccountDTO accountDTO = AccountDTO.builder()
                 .account(jwtRequest.getUsername())

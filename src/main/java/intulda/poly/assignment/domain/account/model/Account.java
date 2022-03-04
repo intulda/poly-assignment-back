@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Account {
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +18,7 @@ public class Account {
     @Column(name = "account_id")
     private Long id;
 
-    @Column(name = "account", nullable = false)
+    @Column(name = "account", nullable = false, unique = true)
     private String account;
 
     @JsonIgnore
@@ -31,15 +30,19 @@ public class Account {
 
     //TODO: 공통으로 빼기
     @Column
-    private LocalDateTime reg_no;
+    private LocalDateTime reg_no = LocalDateTime.now();
 
     @Column
     private LocalDateTime udt_no;
+
+    protected Account() {
+        this.reg_no = LocalDateTime.now();
+    }
 
     @Builder
     public Account(AccountDTO accountDTO) {
         this.account = accountDTO.getAccount();
         this.password = accountDTO.getAccountPassword();
-        this.name = "kimbogeun";
+        this.name = accountDTO.getAccountName();
     }
 }
