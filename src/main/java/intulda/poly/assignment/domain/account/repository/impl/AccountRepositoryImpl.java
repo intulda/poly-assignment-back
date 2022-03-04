@@ -18,11 +18,9 @@ public class AccountRepositoryImpl implements AccountRepositoryCustom {
     }
 
     @Override
-    public Optional<Account> findUser(Account account) {
-        Account user = jpaQueryFactory.selectFrom(QAccount.account1)
-                .where(QAccount.account1.account.eq(account.getAccount())
-                        .and(QAccount.account1.password.eq(account.getPassword())))
-                .fetchOne();
-        return Optional.ofNullable(user);
+    public Optional<Account> findUserById(Account account) {
+        return Optional.ofNullable(jpaQueryFactory.selectFrom(QAccount.account1)
+                .where(QAccount.account1.account.eq(account.getAccount()))
+                .fetchOne());
     }
 }
