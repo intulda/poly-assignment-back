@@ -6,6 +6,7 @@ import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvide
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -55,10 +56,11 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             if (this.jwtTokenProvider.validateToken(jwtToken, user.get().getId())) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         user.get(), null, null);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
 
-        filterChain.doFilter(request, response);
+            filterChain.doFilter(request, response);
     }
 }

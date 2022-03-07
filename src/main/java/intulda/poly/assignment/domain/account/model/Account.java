@@ -1,11 +1,13 @@
 package intulda.poly.assignment.domain.account.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import intulda.poly.assignment.domain.board.model.Board;
 import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,6 +27,9 @@ public class Account {
 
     @Column(name = "account_name", nullable = false)
     private String name;
+
+    @OneToMany(mappedBy = "account")
+    private List<Board> boards;
 
     //TODO: 공통으로 빼기
     @Column
