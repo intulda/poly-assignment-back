@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-public class AccountDTO {
+public class AccountRequest {
 
     private String account;
     private String accountPassword;

@@ -1,11 +1,14 @@
 package intulda.poly.assignment.domain.account.controller;
 
 import intulda.poly.assignment.domain.account.model.Account;
-import intulda.poly.assignment.domain.account.model.AccountDTO;
+import intulda.poly.assignment.domain.account.model.AccountRequest;
 import intulda.poly.assignment.domain.account.service.AccountService;
 import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import intulda.poly.assignment.global.configuration.jwt.model.JwtResponse;
 import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvider;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,7 @@ import javax.validation.Valid;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/v1/**")
+@RequestMapping("/api/v1/")
 public class AccountController {
 
     private static final String PREFIX_URI = "account";
@@ -29,8 +32,9 @@ public class AccountController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    @ApiOperation(value = "find me", notes = "내 정보 찾기")
     @GetMapping(value = PREFIX_URI)
-    public ResponseEntity findMe(final HttpServletRequest request) {
+    public ResponseEntity findMe(@Valid final HttpServletRequest request) {
         String token = request.getHeader("Authorization");
         String getId = null;
 
@@ -44,8 +48,8 @@ public class AccountController {
     }
 
     @PostMapping(value = PREFIX_URI)
-    public ResponseEntity register(@RequestBody @Valid AccountDTO accountDTO) {
-        Optional<Account> account = accountService.saveUser(accountDTO);
+    public ResponseEntity register(@RequestBody @Valid AccountRequest accountRequest) {
+        Optional<Account> account = accountService.saveUser(accountRequest);
 
         return new ResponseEntity(account, HttpStatus.OK);
     }
@@ -54,13 +58,13 @@ public class AccountController {
     public ResponseEntity login(@RequestBody @Valid JwtRequest jwtRequest) {
 
 
-        AccountDTO accountDTO = AccountDTO.builder()
+        AccountRequest accountRequest = AccountRequest.builder()
                 .account(jwtRequest.getUsername())
                 .accountPassword(jwtRequest.getPassword())
                 .build();
 
         Account account = Account.builder()
-                .accountDTO(accountDTO)
+                .accountRequest(accountRequest)
                 .build();
 
         Account result = accountService.findUser(account);

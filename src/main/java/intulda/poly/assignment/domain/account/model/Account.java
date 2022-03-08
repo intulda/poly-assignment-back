@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import intulda.poly.assignment.domain.board.model.Board;
 import lombok.Builder;
 import lombok.Getter;
+import org.hibernate.annotations.Fetch;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -28,7 +29,7 @@ public class Account {
     @Column(name = "account_name", nullable = false)
     private String name;
 
-    @OneToMany(mappedBy = "account")
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "account")
     private List<Board> boards;
 
     //TODO: 공통으로 빼기
@@ -43,9 +44,9 @@ public class Account {
     }
 
     @Builder
-    public Account(AccountDTO accountDTO) {
-        this.account = accountDTO.getAccount();
-        this.password = accountDTO.getAccountPassword();
-        this.name = accountDTO.getAccountName();
+    public Account(AccountRequest accountRequest) {
+        this.account = accountRequest.getAccount();
+        this.password = accountRequest.getAccountPassword();
+        this.name = accountRequest.getAccountName();
     }
 }

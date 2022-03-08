@@ -28,20 +28,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring()
-                .antMatchers("/h2-console/**", "/swagger-ui.html");
+                .antMatchers("/h2-console/**", "/swagger-ui/**");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf()
-                .ignoringAntMatchers("/h2-console/**", "/swagger-ui.html")
+                .ignoringAntMatchers("/h2-console/**", "/swagger-ui/**")
                 .disable()
                 .formLogin()
                 .disable()
                 .authorizeRequests()
                 .antMatchers("/api/v1/account/**").permitAll()
-                .antMatchers("/api/v1/boards").permitAll()
+                .antMatchers("/api/v1/boards", "/api/v1/board/*").permitAll()
+                .antMatchers("/swagger-resources/**", "/v2/api-docs").permitAll()
+                .antMatchers("/api/v1/board/me").authenticated()
                 .anyRequest()
                 .authenticated()
                 .and()
