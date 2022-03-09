@@ -1,15 +1,15 @@
 # POLY_ASSIGNMENT
 
 ## FEATURE
-* [ ] 회원가입
+* [x] 회원가입
 * [ ] 게시글 작성
 * [ ] 게시글 수정
 * [ ] 게시글 삭제
-* [ ] 로그인
+* [x] 로그인
 * [ ] 로그아웃
-* [ ] Swagger2 세팅
-* [ ] JWT 세팅
-* [ ] Spring Security 세팅
+* [x] Swagger2 세팅
+* [x] JWT 세팅
+* [x] Spring Security 세팅
 
 ---
 

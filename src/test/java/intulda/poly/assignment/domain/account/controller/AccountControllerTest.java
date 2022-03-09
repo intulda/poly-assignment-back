@@ -2,7 +2,7 @@ package intulda.poly.assignment.domain.account.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import intulda.poly.assignment.domain.account.model.Account;
-import intulda.poly.assignment.domain.account.model.AccountDTO;
+import intulda.poly.assignment.domain.account.model.AccountRequest;
 import intulda.poly.assignment.domain.account.repository.AccountRepository;
 import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import javax.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
-import static org.junit.jupiter.api.Assertions.*;
 
 @WebAppConfiguration
 @AutoConfigureMockMvc
@@ -53,13 +52,13 @@ class AccountControllerTest {
                 .password("flqj0610")
                 .build();
 
-        AccountDTO accountDTO = AccountDTO.builder()
+        AccountRequest accountRequest = AccountRequest.builder()
                 .account(jwtRequest.getUsername())
                 .accountPassword(jwtRequest.getPassword())
                 .build();
 
         Account account = Account.builder()
-                .accountDTO(accountDTO)
+                .accountRequest(accountRequest)
                 .build();
 
         accountRepository.save(account);
@@ -69,13 +68,13 @@ class AccountControllerTest {
     @Test
     void registerTest() throws Exception {
         for (int i = 0; i < 10; i++) {
-            AccountDTO accountDTO = AccountDTO.builder()
+            AccountRequest accountRequest = AccountRequest.builder()
                     .account(i + "a")
                     .accountPassword((i + (i * i)) + "")
                     .accountName("a" + i)
                     .build();
             Account account = Account.builder()
-                    .accountDTO(accountDTO)
+                    .accountRequest(accountRequest)
                     .build();
 
             RequestBuilder requestBuilder = MockMvcRequestBuilders.post("/api/v1/account")

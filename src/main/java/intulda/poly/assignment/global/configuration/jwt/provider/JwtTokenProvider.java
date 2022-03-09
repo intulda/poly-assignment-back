@@ -37,6 +37,9 @@ public class JwtTokenProvider implements Serializable {
     }
 
     private Claims getAllClaimsFromToken(String token) {
+        if (token.startsWith("Bearer")) {
+            token = token.substring(7);
+        }
         return Jwts.parser()
                 .setSigningKey(secret)
                 .parseClaimsJws(token)

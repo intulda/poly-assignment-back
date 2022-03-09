@@ -1,9 +1,8 @@
 package intulda.poly.assignment.domain.account.service;
 
 import intulda.poly.assignment.domain.account.model.Account;
-import intulda.poly.assignment.domain.account.model.AccountDTO;
+import intulda.poly.assignment.domain.account.model.AccountRequest;
 import intulda.poly.assignment.domain.account.repository.AccountRepository;
-import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,12 +37,12 @@ public class AccountService {
         return user;
     }
 
-    public Optional<Account> saveUser(AccountDTO accountDTO) {
-        String bcryptPassword = bCryptPasswordEncoder.encode(accountDTO.getAccountPassword());
-        accountDTO.setAccountPassword(bcryptPassword);
+    public Optional<Account> saveUser(AccountRequest accountRequest) {
+        String bcryptPassword = bCryptPasswordEncoder.encode(accountRequest.getAccountPassword());
+        accountRequest.setAccountPassword(bcryptPassword);
 
         Account account = Account.builder()
-                .accountDTO(accountDTO)
+                .accountRequest(accountRequest)
                 .build();
 
         return Optional.of(this.accountRepository.save(account));
