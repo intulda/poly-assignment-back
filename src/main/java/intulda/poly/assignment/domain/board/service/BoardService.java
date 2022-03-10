@@ -56,7 +56,7 @@ public class BoardService {
 
     public Board update(BoardRequest boardRequest) {
         Board board = findBoard(boardRequest.getBoardId()).orElseThrow(IllegalArgumentException::new);
-        board.changeContents(board.getContents());
+        board.changeBoard(board.getTitle(), board.getContents());
         return this.boardRepository.save(board);
     }
 }

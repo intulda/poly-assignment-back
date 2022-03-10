@@ -55,8 +55,10 @@ public class Board {
         updateDate();
     }
 
-    public void changeContents(String contents) {
+    public void changeBoard(String title, String contents) {
+        this.title = title;
         this.contents = contents;
+        updateDate();
     }
 
     public void updateDate() {
