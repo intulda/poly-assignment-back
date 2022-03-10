@@ -57,15 +57,20 @@ public class BoardController {
 
     @ApiOperation(value = "find board select", notes = "해당 게시글 찾기")
     @GetMapping(value = "board/{id}")
-    public ResponseEntity<Board> findBoard(@PathVariable("id") String id) {
-        Board board = this.boardService.findBoard(Long.parseLong(id)).orElseThrow(IllegalArgumentException::new);
+    public ResponseEntity<Board> findBoard(@PathVariable("id") String id, HttpServletRequest request) {
+        String token = getHeaderAuthorization(request);
+        Long accountId = null;
+        if (token != null) {
+            accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
+        }
+        Board board = this.boardService.findBoard(Long.parseLong(id), accountId).orElseThrow(IllegalArgumentException::new);
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
     @ApiOperation(value = "find my board", notes = "내 게시글 찾기")
     @GetMapping(value = "board/me")
     public ResponseEntity<BoardResponse> findMyBoardAll(final HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
+        String token = getHeaderAuthorization(request);
         Long userId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
         PageRequest of = PageRequest.of(0, 5);
         BoardResponse myBoardAll = this.boardService.findMyBoardAll(userId, of);
@@ -76,15 +81,21 @@ public class BoardController {
     @DeleteMapping(value = "board")
     public ResponseEntity<Long> deleteMyBoard(@RequestBody BoardRequest boardRequest, HttpServletRequest request) {
         String token = getHeaderAuthorization(request);
-        Long userId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
-        boardRequest.setAccountId(userId);
-        Board delete = this.boardService.delete(boardRequest);
-        return new ResponseEntity<>(delete.getId(), HttpStatus.OK);
+        Long accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
+        boardRequest.setAccountId(accountId);
+        Long delete = this.boardService.delete(boardRequest);
+        return new ResponseEntity<>(delete, HttpStatus.OK);
     }
 
     @ApiOperation(value = "board update", notes = "게시물 수정")
     @PutMapping(value = "board")
     public ResponseEntity<Board> updateContents(@RequestBody BoardRequest boardRequest, HttpServletRequest request) {
+        String token = getHeaderAuthorization(request);
+        Long accountId = null;
+        if (token != null) {
+            accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
+        }
+        boardRequest.setAccountId(accountId);
         Board updateBoard = this.boardService.update(boardRequest);
         return new ResponseEntity<>(updateBoard, HttpStatus.OK);
     }
