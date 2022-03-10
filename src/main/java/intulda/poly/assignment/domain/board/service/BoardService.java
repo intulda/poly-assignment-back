@@ -33,8 +33,8 @@ public class BoardService {
         return saveBoard.getId();
     }
 
-    public Optional<Board> findBoard(Long id) {
-        return this.boardRepository.findBoardById(id);
+    public Optional<Board> findBoard(Long id, Long accountId) {
+        return this.boardRepository.findBoardById(id, accountId);
     }
 
     public BoardResponse findMyBoardAll(Long id, Pageable pageable) {
@@ -47,16 +47,16 @@ public class BoardService {
                 .build();
     }
 
-    public Board delete(BoardRequest boardRequest) {
-        Board board = findBoard(boardRequest.getBoardId()).orElseThrow(IllegalArgumentException::new);
+    public Long delete(BoardRequest boardRequest) {
+        Board board = findBoard(boardRequest.getBoardId(), boardRequest.getAccountId()).orElseThrow(IllegalArgumentException::new);
         board.changeState(boardRequest.getBoardState());
         Board save = this.boardRepository.save(board);
-        return save;
+        return save.getId();
     }
 
     public Board update(BoardRequest boardRequest) {
-        Board board = findBoard(boardRequest.getBoardId()).orElseThrow(IllegalArgumentException::new);
-        board.changeBoard(board.getTitle(), board.getContents());
+        Board board = findBoard(boardRequest.getBoardId(), boardRequest.getAccountId()).orElseThrow(IllegalArgumentException::new);
+        board.changeBoard(boardRequest.getBoardTitle(), boardRequest.getBoardContents());
         return this.boardRepository.save(board);
     }
 }

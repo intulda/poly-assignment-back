@@ -32,7 +32,7 @@ public class AccountController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @ApiOperation(value = "find me", notes = "내 정보 찾기")
+    @ApiOperation(value = "find myInformation", notes = "내 정보 찾기")
     @GetMapping(value = PREFIX_URI)
     public ResponseEntity findMe(@Valid final HttpServletRequest request) {
         String token = request.getHeader("Authorization");
@@ -47,6 +47,7 @@ public class AccountController {
         return new ResponseEntity(user, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "account register", notes = "계정 생성")
     @PostMapping(value = PREFIX_URI)
     public ResponseEntity register(@RequestBody @Valid AccountRequest accountRequest) {
         Optional<Account> account = accountService.saveUser(accountRequest);
@@ -54,6 +55,7 @@ public class AccountController {
         return new ResponseEntity(account, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "login", notes = "로그인")
     @PostMapping(value = PREFIX_URI + "/login")
     public ResponseEntity login(@RequestBody @Valid JwtRequest jwtRequest) {
 
