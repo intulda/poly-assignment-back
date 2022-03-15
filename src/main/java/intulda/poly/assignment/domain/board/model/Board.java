@@ -1,11 +1,14 @@
 package intulda.poly.assignment.domain.board.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import intulda.poly.assignment.domain.account.model.Account;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,7 +26,7 @@ public class Board {
     @Column(name = "board_title", nullable = false)
     private String title;
 
-    @Column(name = "board_contents", nullable = false)
+    @Column(name = "board_contents", nullable = false, columnDefinition = "LONGTEXT")
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -31,8 +34,12 @@ public class Board {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일 HH시 mm분", timezone = "Asia/Seoul")
+    @CreationTimestamp
     private LocalDateTime regDate;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일 HH시 mm분", timezone = "Asia/Seoul")
+    @UpdateTimestamp
     private LocalDateTime udtDate;
 
     @Column(name = "board_delete")

@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,6 +74,9 @@ public class AccountController {
         String token = null;
 
         try {
+            if (result == null) {
+                throw new IllegalArgumentException();
+            }
             token = jwtTokenProvider.generateToken(result);
         } catch (IllegalArgumentException e) {
             return new ResponseEntity("존재하지 않는 회원입니다.", HttpStatus.NOT_FOUND);
@@ -83,6 +87,12 @@ public class AccountController {
                 .build();
 
         return new ResponseEntity(jwtResponse, HttpStatus.OK);
+    }
+
+    @PostMapping(PREFIX_URI + "/logout")
+    public ResponseEntity logout() {
+        SecurityContextHolder.clearContext();
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }
