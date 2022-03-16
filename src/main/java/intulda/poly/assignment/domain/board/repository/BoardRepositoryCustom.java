@@ -15,5 +15,7 @@ public interface BoardRepositoryCustom {
 
     List<Board> findBoardAll(Pageable pageable);
 
-    Optional<Board> findBoardById(Long id, Long accountId);
+    Optional<Board> findBoardById(Long id);
+
+    Optional<Board> findMyBoard(Long id, Long accountId);
 }

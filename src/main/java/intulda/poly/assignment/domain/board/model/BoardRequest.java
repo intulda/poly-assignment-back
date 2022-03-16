@@ -16,6 +16,8 @@ public class BoardRequest {
 
     private String boardTitle;
 
+    private String boardAuthor;
+
     private String boardContents;
 
     @ApiModelProperty(hidden = true)

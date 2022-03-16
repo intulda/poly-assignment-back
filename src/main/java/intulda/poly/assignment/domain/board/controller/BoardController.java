@@ -3,18 +3,23 @@ package intulda.poly.assignment.domain.board.controller;
 import intulda.poly.assignment.domain.account.model.Account;
 import intulda.poly.assignment.domain.account.service.AccountService;
 import intulda.poly.assignment.domain.board.model.Board;
+import intulda.poly.assignment.domain.board.model.BoardOneResponse;
 import intulda.poly.assignment.domain.board.model.BoardRequest;
 import intulda.poly.assignment.domain.board.model.BoardResponse;
 import intulda.poly.assignment.domain.board.service.BoardService;
 import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvider;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/api/v1/**")
@@ -34,8 +39,8 @@ public class BoardController {
 
     @ApiOperation(value = "find board all", notes = "게시물 전체 조회")
     @GetMapping(value = "boards")
-    public ResponseEntity<List<Board>> findBoardAll() {
-        PageRequest pageRequest = PageRequest.of(0, 5);
+    public ResponseEntity<List<Board>> findBoardAll(@Param("pageNumber") int pageNumber) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, 5);
         return new ResponseEntity<>(this.boardService.findBoardAll(pageRequest), HttpStatus.OK);
     }
 
@@ -57,13 +62,8 @@ public class BoardController {
 
     @ApiOperation(value = "find board select", notes = "해당 게시글 찾기")
     @GetMapping(value = "board/{id}")
-    public ResponseEntity<Board> findBoard(@PathVariable("id") String id, HttpServletRequest request) {
-        String token = getHeaderAuthorization(request);
-        Long accountId = null;
-        if (token != null) {
-            accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
-        }
-        Board board = this.boardService.findBoard(Long.parseLong(id), accountId).orElseThrow(IllegalArgumentException::new);
+    public ResponseEntity<BoardOneResponse> findBoard(@PathVariable("id") String id, HttpServletRequest request) {
+        BoardOneResponse board = this.boardService.findBoard(Long.parseLong(id));
         return new ResponseEntity<>(board, HttpStatus.OK);
     }
 
@@ -81,6 +81,9 @@ public class BoardController {
     @DeleteMapping(value = "board")
     public ResponseEntity<Long> deleteMyBoard(@RequestBody BoardRequest boardRequest, HttpServletRequest request) {
         String token = getHeaderAuthorization(request);
+        if (token == null) {
+            throw new IllegalArgumentException();
+        }
         Long accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
         boardRequest.setAccountId(accountId);
         Long delete = this.boardService.delete(boardRequest);
@@ -91,10 +94,10 @@ public class BoardController {
     @PutMapping(value = "board")
     public ResponseEntity<Board> updateContents(@RequestBody BoardRequest boardRequest, HttpServletRequest request) {
         String token = getHeaderAuthorization(request);
-        Long accountId = null;
-        if (token != null) {
-            accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
+        if (token == null) {
+            throw new IllegalArgumentException();
         }
+        Long accountId = Long.parseLong(jwtTokenProvider.getUsernameFromToken(token));
         boardRequest.setAccountId(accountId);
         Board updateBoard = this.boardService.update(boardRequest);
         return new ResponseEntity<>(updateBoard, HttpStatus.OK);

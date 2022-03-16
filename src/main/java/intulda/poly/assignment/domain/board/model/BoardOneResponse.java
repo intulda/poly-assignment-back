@@ -5,13 +5,12 @@ import lombok.*;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BoardResponse {
+public class BoardOneResponse {
 
     private Long account_id;
 
@@ -23,11 +22,14 @@ public class BoardResponse {
 
     private HashSet<Board> board;
 
-    @Builder(builderMethodName = "boardAll")
-    public BoardResponse(Account account, List<Board> boards) {
-        this.account_id = account.getId();
-        this.account = account.getAccount();
-        this.account_name = account.getName();
-        this.boards = boards;
+    @Builder(builderMethodName = "boardOne")
+    public BoardOneResponse(Board board) {
+        this.account_id = board.getAccount().getId();
+        this.account = board.getAccount().getAccount();
+        this.account_name = board.getAccount().getName();
+        HashSet<Board> boardSet = new HashSet();
+        boardSet.add(board);
+
+        this.board = boardSet;
     }
 }

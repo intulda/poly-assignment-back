@@ -34,6 +34,9 @@ public class Board {
     @JoinColumn(name = "account_id")
     private Account account;
 
+    @Column(name = "board_author", nullable = false)
+    private String author;
+
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy년 MM월 dd일 HH시 mm분", timezone = "Asia/Seoul")
     @CreationTimestamp
     private LocalDateTime regDate;
@@ -54,6 +57,7 @@ public class Board {
     }
 
     public void addAccount(Account account) {
+        this.author = account.getName();
         this.account = account;
     }
 
