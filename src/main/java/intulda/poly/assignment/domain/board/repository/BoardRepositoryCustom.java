@@ -13,7 +13,7 @@ public interface BoardRepositoryCustom {
 
     List<Board> findMyBoardAll(Long id, Pageable pageable);
 
-    List<Board> findBoardAll(Pageable pageable);
+    List<Board> findBoardAll(Pageable pageable, String type, String keyword);
 
     Optional<Board> findBoardById(Long id);
 

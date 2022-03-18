@@ -39,9 +39,9 @@ public class BoardController {
 
     @ApiOperation(value = "find board all", notes = "게시물 전체 조회")
     @GetMapping(value = "boards")
-    public ResponseEntity<List<Board>> findBoardAll(@Param("pageNumber") int pageNumber) {
-        PageRequest pageRequest = PageRequest.of(pageNumber, 5);
-        return new ResponseEntity<>(this.boardService.findBoardAll(pageRequest), HttpStatus.OK);
+    public ResponseEntity<List<Board>> findBoardAll(@Param("pageNumber") int pageNumber,@Param("keyword") String keyword,@Param("type") String type) {
+        PageRequest pageRequest = PageRequest.of(pageNumber, 100);
+        return new ResponseEntity<>(this.boardService.findBoardAll(pageRequest, type, keyword), HttpStatus.OK);
     }
 
     @ApiOperation(value = "write board", notes = "게시글 등록")

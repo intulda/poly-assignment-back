@@ -6,8 +6,6 @@ import intulda.poly.assignment.domain.account.service.AccountService;
 import intulda.poly.assignment.global.configuration.jwt.model.JwtRequest;
 import intulda.poly.assignment.global.configuration.jwt.model.JwtResponse;
 import intulda.poly.assignment.global.configuration.jwt.provider.JwtTokenProvider;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

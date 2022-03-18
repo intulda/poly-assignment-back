@@ -1,5 +1,7 @@
 package intulda.poly.assignment.domain.board.repository.impl;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import intulda.poly.assignment.domain.board.model.Board;
 import intulda.poly.assignment.domain.board.model.BoardState;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Repository
 public class BoardRepositoryImpl implements BoardRepositoryCustom {
@@ -35,12 +38,13 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
     }
 
     @Override
-    public List<Board> findBoardAll(Pageable pageable) {
+    public List<Board> findBoardAll(Pageable pageable, String type, String keyword) {
         QBoard board = QBoard.board;
 
         List<Board> fetch = jpaQueryFactory
                 .selectFrom(board)
-                .where(board.boardState.eq(BoardState.STABLE))
+                .where(board.boardState.eq(BoardState.STABLE)
+                        .and(isSearchable(type, keyword)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(board.id.desc())
@@ -71,5 +75,24 @@ public class BoardRepositoryImpl implements BoardRepositoryCustom {
                         board.id.eq(id),
                         board.account.id.eq(accountId)
                 ).fetchOne());
+    }
+
+    BooleanBuilder isSearchable(String type, String keyword) {
+        switch (type) {
+            case "title":
+                return nullSafeBuilder(() -> QBoard.board.title.contains(keyword));
+            case "name" :
+                return nullSafeBuilder(() -> QBoard.board.account.name.contains(keyword));
+            default:
+                return nullSafeBuilder(() -> QBoard.board.title.contains(keyword).or(QBoard.board.account.name.contains(keyword)));
+        }
+    }
+
+    BooleanBuilder nullSafeBuilder(Supplier<BooleanExpression> f) {
+        try {
+            return new BooleanBuilder(f.get());
+        } catch (Exception e) {
+            return new BooleanBuilder();
+        }
     }
 }

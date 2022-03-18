@@ -26,8 +26,8 @@ public class BoardService {
         this.boardRepository = boardRepository;
     }
 
-    public List<Board> findBoardAll(Pageable pageable) {
-        return this.boardRepository.findBoardAll(pageable);
+    public List<Board> findBoardAll(Pageable pageable, String type, String keyword) {
+        return this.boardRepository.findBoardAll(pageable, type, keyword);
     }
 
     public Long write(Board board) {

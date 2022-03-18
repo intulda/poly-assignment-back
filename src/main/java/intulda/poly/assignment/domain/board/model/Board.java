@@ -26,7 +26,7 @@ public class Board {
     @Column(name = "board_title", nullable = false)
     private String title;
 
-    @Column(name = "board_contents", nullable = false, columnDefinition = "LONGTEXT")
+    @Column(name = "board_contents",  nullable = false, columnDefinition = "LONGTEXT")
     private String contents;
 
     @ManyToOne(fetch = FetchType.LAZY)
